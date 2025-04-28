@@ -28,9 +28,9 @@ def get_all_dogs():
     query = db.select(Dog).order_by(Dog.id)
     dogs = db.session.scalars(query)
 
-    dogs_responce = []
+    dogs_response = []
     for dog in dogs:
-        dogs_responce.append(
+        dogs_response.append(
             {
                 "id": dog.id,
                 "name": dog.name,
@@ -38,11 +38,11 @@ def get_all_dogs():
                 "temperament": dog.temperament
             }
         )
-    return dogs_responce
+    return dogs_response
 
 
 @dogs_bp.get("/<id>")
-def get_one_cat(id):
+def get_one_dog(id):
     dog = validate_dog(id)
     return {
         "id": dog.id,

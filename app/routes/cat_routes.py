@@ -28,9 +28,9 @@ def get_all_cats():
     query = db.select(Cat).order_by(Cat.id)
     cats = db.session.scalars(query)
 
-    cats_responce = []
+    cats_response = []
     for cat in cats:
-        cats_responce.append(
+        cats_response.append(
             {
                 "id": cat.id,
                 "name": cat.name,
@@ -38,7 +38,7 @@ def get_all_cats():
                 "personality": cat.personality
             }
         )
-    return cats_responce
+    return cats_response
 
 @cats_bp.get("/<id>")
 def get_one_cat(id):
