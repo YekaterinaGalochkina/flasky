@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, make_response, request
+from flask import Blueprint, abort, make_response, request, Response
 from app.models.cat import Cat
 from ..db import db
 # from ..models.cat import cats
@@ -40,6 +40,59 @@ def get_all_cats():
             }
         )
     return cats_responce
+
+@cats_bp.get("/<id>")
+def get_one_cat(id):
+    cat = validate_cat(id)
+    return {
+        "id": cat.id,
+        "name": cat.name,
+        "color": cat.color,
+        "personality": cat.personality
+    }
+
+def validate_cat(id):
+    try:
+        id = int(id)
+    except ValueError:
+        invalid = {"message": f"Cat id ({id}) is invalid."}
+        abort(make_response(invalid, 400))
+
+    query = db.select(Cat).where(Cat.id == id)
+    cat = db.session.scalar(query)
+
+    if not cat:
+        not_found = {"message": f"Cat with id ({id}) not found."}
+        abort(make_response(not_found, 404))
+
+    return cat
+
+@cats_bp.put("/<id>")
+def update_cat(id):
+    cat = validate_cat(id)
+    request_body = request.get_json()
+
+    cat.name = request_body["name"]
+    cat.color = request_body["color"]
+    cat.personality = request_body["personality"]
+
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
+
+@cats_bp.delete("/<id>")
+def delete_cat(id):
+    cat = validate_cat(id)
+    db.session.delete(cat)
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
+
+
+
+
 
 
 # @cats_bp.get("")

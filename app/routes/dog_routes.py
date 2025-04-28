@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, make_response, request
+from flask import Blueprint, abort, make_response, request, Response
 from app.models.dog import Dog
 from ..db import db
 
@@ -39,3 +39,55 @@ def get_all_dogs():
             }
         )
     return dogs_responce
+
+
+@dogs_bp.get("/<id>")
+def get_one_cat(id):
+    dog = validate_dog(id)
+    return {
+        "id": dog.id,
+        "name": dog.name,
+        "color": dog.color,
+        "temperament": dog.temperament
+    }
+
+def validate_dog(id):
+    try:
+        id = int(id)
+    except ValueError:
+        invalid = {"message": f"Dog id ({id}) is invalid."}
+        abort(make_response(invalid, 400))
+
+    query = db.select(Dog).where(Dog.id == id)
+    dog = db.session.scalar(query)
+
+    if not dog:
+        not_found = {"message": f"Dog with id ({id}) not found."}
+        abort(make_response(not_found, 404))
+
+    return dog
+
+
+@dogs_bp.put("/<id>")
+def update_dog(id):
+    dog = validate_dog(id)
+    request_body = request.get_json()
+
+    dog.name = request_body["name"]
+    dog.color = request_body["color"]
+    dog.temperament = request_body["temperament"]
+
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
+
+@dogs_bp.delete("/<id>")
+def delete_dog(id):
+    dog = validate_dog(id)
+    db.session.delete(dog)
+    db.session.commit()
+
+    return Response(status=204, mimetype="application/json")
+
+
