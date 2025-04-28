@@ -1,6 +1,6 @@
 from flask import Flask
 from .db import db, migrate
-from .models import cat
+from .models import cat, dog
 from .routes.cat_routes import cats_bp
 from .routes.dog_routes import dogs_bp
 
