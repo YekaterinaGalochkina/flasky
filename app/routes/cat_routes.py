@@ -25,7 +25,18 @@ def create_cat():
 
 @cats_bp.get("")
 def get_all_cats():
+    query = db.select(Cat)
+
+    name_param = request.args.get("name")
+    if name_param:
+        query = db.select(Cat).where(Cat.name == name_param).order_by(Cat.id)
+
+    color_param = request.args.get("color")    
+    if color_param:
+        query = db.select(Cat).where(Cat.color.ilike(f"%{color_param}"))
+    
     query = db.select(Cat).order_by(Cat.id)
+
     cats = db.session.scalars(query)
 
     cats_response = []
