@@ -27,7 +27,16 @@ def create_dog():
 
 @dogs_bp.get("")
 def get_all_dogs():
-    query = db.select(Dog).order_by(Dog.id)
+    query = db.select(Dog)
+
+    name_param = request.args.get("name")
+    if name_param:
+        query = db.select(Dog).where(Dog.name.ilike(f"{name_param}"))
+
+    color_param = request.args.get("color")    
+    if color_param:
+        query = db.select(Dog).where(Dog.color.ilike(f"%{color_param}"))
+
     dogs = db.session.scalars(query)
 
     dogs_response = []
@@ -94,5 +103,16 @@ def delete_dog(id):
     db.session.commit()
 
     return Response(status=204, mimetype="application/json")
+
+@dogs_bp.delete("")
+def delete_all_dogs():
+    dogs = db.session.scalars(db.select(Dog)).all()
+    
+    for dog in dogs:
+        db.session.delete(dog)
+    
+    db.session.commit()
+    
+    return {"message": f"Deleted {len(dogs)} dogs."}, 200
 
 

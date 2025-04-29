@@ -29,18 +29,18 @@ def get_all_cats():
 
     name_param = request.args.get("name")
     if name_param:
-        query = db.select(Cat).where(Cat.name == name_param).order_by(Cat.id)
+        query = db.select(Cat).where(Cat.name == name_param)
 
     color_param = request.args.get("color")    
     if color_param:
-        query = db.select(Cat).where(Cat.color.ilike(f"%{color_param}"))
+        query = query.where(Cat.color.ilike(f"%{color_param}%"))
     
-    query = db.select(Cat).order_by(Cat.id)
+    query = query.order_by(Cat.name)
 
     cats = db.session.scalars(query)
 
     cats_response = []
-    for cat in cats:
+    for cat in cats: 
         cats_response.append(
             {
                 "id": cat.id,
@@ -49,6 +49,7 @@ def get_all_cats():
                 "personality": cat.personality
             }
         )
+
     return cats_response
 
 @cats_bp.get("/<id>")
@@ -98,6 +99,17 @@ def delete_cat(id):
     db.session.commit()
 
     return Response(status=204, mimetype="application/json")
+
+@cats_bp.delete("")
+def delete_all_cats():
+    cats = db.session.scalars(db.select(Cat)).all()
+    
+    for cat in cats:
+        db.session.delete(cat)
+    
+    db.session.commit()
+    
+    return {"message": f"Deleted {len(cats)} cats."}, 200
 
 
 
