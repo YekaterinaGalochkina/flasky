@@ -37,6 +37,19 @@ def get_all_dogs():
     if color_param:
         query = db.select(Dog).where(Dog.color.ilike(f"%{color_param}"))
 
+
+    # Add sorting by attribute if 'sort' param exists
+    sort_param = request.args.get("sort")
+    if sort_param:
+        if sort_param == "name":
+            query = query.order_by(Dog.name)
+        elif sort_param == "color":
+            query = query.order_by(Dog.color)
+        elif sort_param == "temperament":
+            query = query.order_by(Dog.temperament)
+        elif sort_param == "is_vaccinated":
+            query = query.order_by(Dog.is_vaccinated)
+
     dogs = db.session.scalars(query)
 
     dogs_response = []
