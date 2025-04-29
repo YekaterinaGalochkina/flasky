@@ -10,8 +10,9 @@ def create_dog():
     name = request_body["name"]
     color = request_body["color"]
     temperament = request_body["temperament"]
+    is_vaccinated = request_body["is_vaccinated"]
 
-    new_dog = Dog(name=name, color=color, temperament=temperament)
+    new_dog = Dog(name=name, color=color, temperament=temperament, is_vaccinated=is_vaccinated)
     db.session.add(new_dog)
     db.session.commit()
 
@@ -19,7 +20,8 @@ def create_dog():
         "id": new_dog.id,
         "name": new_dog.name,
         "color": new_dog.color,
-        "temperament": new_dog.temperament
+        "temperament": new_dog.temperament,
+        "is_vaccinated": new_dog.is_vaccinated
     }
     return response, 201
 
@@ -35,7 +37,8 @@ def get_all_dogs():
                 "id": dog.id,
                 "name": dog.name,
                 "color": dog.color,
-                "temperament": dog.temperament
+                "temperament": dog.temperament,
+                "is_vaccinated": dog.is_vaccinated
             }
         )
     return dogs_response
@@ -48,7 +51,8 @@ def get_one_dog(id):
         "id": dog.id,
         "name": dog.name,
         "color": dog.color,
-        "temperament": dog.temperament
+        "temperament": dog.temperament,
+        "is_vaccinated": dog.is_vaccinated
     }
 
 def validate_dog(id):
@@ -76,6 +80,7 @@ def update_dog(id):
     dog.name = request_body["name"]
     dog.color = request_body["color"]
     dog.temperament = request_body["temperament"]
+    dog.is_vaccinated = request_body["is_vaccinated"]
 
     db.session.commit()
 

@@ -1,5 +1,6 @@
 from app import create_app, db
 from app.models.cat import Cat
+from app.models.dog import Dog
 
 my_app = create_app()
 with my_app.app_context():
@@ -21,4 +22,26 @@ with my_app.app_context():
     db.session.add(Cat(name="Gato", color="grey", personality="fun")),
     db.session.add(Cat(name="Red XIII", color="red", personality="serious")),
     db.session.add(Cat(name="Gizzy", color="white", personality="unbothered")),
+    db.session.commit()
+
+with my_app.app_context():
+    db.session.add(Dog(name="Buddy", color="brown", temperament="friendly", is_vaccinated=True))
+    db.session.add(Dog(name="Max", color="black", temperament="playful", is_vaccinated=True))
+    db.session.add(Dog(name="Bella", color="golden", temperament="loyal", is_vaccinated=True))
+    db.session.add(Dog(name="Charlie", color="white", temperament="energetic", is_vaccinated=False))
+    db.session.add(Dog(name="Milo", color="beige", temperament="curious", is_vaccinated=True))
+    db.session.add(Dog(name="Rocky", color="gray", temperament="adventurous", is_vaccinated=False))
+    db.session.add(Dog(name="Lucy", color="tan", temperament="affectionate", is_vaccinated=True))
+    db.session.add(Dog(name="Daisy", color="yellow", temperament="obedient", is_vaccinated=False))
+    db.session.add(Dog(name="Sadie", color="black and white", temperament="sassy", is_vaccinated=True))
+    db.session.add(Dog(name="Cooper", color="brown and white", temperament="calm", is_vaccinated=True))
+    db.session.add(Dog(name="Bailey", color="red", temperament="social", is_vaccinated=False))
+    db.session.add(Dog(name="Jack", color="blue", temperament="mellow", is_vaccinated=True))
+    db.session.add(Dog(name="Lola", color="spotted", temperament="cheerful", is_vaccinated=True))
+    db.session.add(Dog(name="Chester", color="gray and white", temperament="mischievous", is_vaccinated=False))
+    db.session.add(Dog(name="Penny", color="chocolate", temperament="sweet", is_vaccinated=True))
+    db.session.add(Dog(name="Rex", color="black", temperament="protective", is_vaccinated=True))
+    db.session.add(Dog(name="Toby", color="brown", temperament="easygoing", is_vaccinated=False))
+    db.session.add(Dog(name="Sophie", color="cream", temperament="energetic", is_vaccinated=True))
+    db.session.add(Dog(name="Ziggy", color="silver", temperament="loving", is_vaccinated=True))
     db.session.commit()

@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Mapped, mapped_column
 from ..db import db
+from sqlalchemy import Boolean
 
 
 class Dog(db.Model):
@@ -7,6 +8,7 @@ class Dog(db.Model):
     name: Mapped[str]
     color: Mapped[str]
     temperament: Mapped[str]
+    is_vaccinated: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
 
 # class Dog:
