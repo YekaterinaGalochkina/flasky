@@ -16,14 +16,7 @@ def create_dog():
     db.session.add(new_dog)
     db.session.commit()
 
-    response = {
-        "id": new_dog.id,
-        "name": new_dog.name,
-        "color": new_dog.color,
-        "temperament": new_dog.temperament,
-        "is_vaccinated": new_dog.is_vaccinated
-    }
-    return response, 201
+    return new_dog.to_dict(), 201
 
 @dogs_bp.get("")
 def get_all_dogs():
@@ -54,28 +47,14 @@ def get_all_dogs():
 
     dogs_response = []
     for dog in dogs:
-        dogs_response.append(
-            {
-                "id": dog.id,
-                "name": dog.name,
-                "color": dog.color,
-                "temperament": dog.temperament,
-                "is_vaccinated": dog.is_vaccinated
-            }
-        )
+        dogs_response.append(dog.to_dict())
     return dogs_response
 
 
 @dogs_bp.get("/<id>")
 def get_one_dog(id):
     dog = validate_dog(id)
-    return {
-        "id": dog.id,
-        "name": dog.name,
-        "color": dog.color,
-        "temperament": dog.temperament,
-        "is_vaccinated": dog.is_vaccinated
-    }
+    return dog.to_dict()
 
 def validate_dog(id):
     try:

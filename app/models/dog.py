@@ -10,18 +10,12 @@ class Dog(db.Model):
     temperament: Mapped[str]
     is_vaccinated: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
-
-# class Dog:
-#     def __init__(self, id, name, color, temperament):
-#         self.id = id
-#         self.name = name
-#         self.color = color
-#         self.temperament = temperament
-
-# dogs = [
-#     Dog(1, "Rex", "brown", "loyal"),
-#     Dog(2, "Bella", "black", "playful"),
-#     Dog(3, "Max", "white", "calm"),
-#     Dog(4, "Mils", "golden", "friendly")
-# ]
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "color": self.color,
+            "temperament": self.temperament,
+            "is_vaccinated": self.is_vaccinated
+        }
 
