@@ -40,8 +40,8 @@ def get_all_cats():
 @cats_bp.get("/<id>")
 def get_one_cat(id):
     cat = validate_model(Cat, id)
-    return cat.to_dict()
 
+    return cat.to_dict()
 
 @cats_bp.put("/<id>")
 def update_cat(id):

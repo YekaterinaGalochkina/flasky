@@ -1,6 +1,7 @@
 from flask import Blueprint, abort, make_response, request, Response
 from app.models.dog import Dog
 from ..db import db
+from .route_utilities import validate_model
 
 dogs_bp = Blueprint("dogs_bp", __name__, url_prefix = "/dogs")
 
@@ -49,29 +50,13 @@ def get_all_dogs():
 
 @dogs_bp.get("/<id>")
 def get_one_dog(id):
-    dog = validate_dog(id)
+    dog = validate_model(Dog,id)
     return dog.to_dict()
-
-def validate_dog(id):
-    try:
-        id = int(id)
-    except ValueError:
-        invalid = {"message": f"Dog id ({id}) is invalid."}
-        abort(make_response(invalid, 400))
-
-    query = db.select(Dog).where(Dog.id == id)
-    dog = db.session.scalar(query)
-
-    if not dog:
-        not_found = {"message": f"Dog with id ({id}) not found."}
-        abort(make_response(not_found, 404))
-
-    return dog
 
 
 @dogs_bp.put("/<id>")
 def update_dog(id):
-    dog = validate_dog(id)
+    dog = validate_model(Dog, id)
     request_body = request.get_json()
 
     dog.name = request_body["name"]
@@ -86,7 +71,7 @@ def update_dog(id):
 
 @dogs_bp.delete("/<id>")
 def delete_dog(id):
-    dog = validate_dog(id)
+    dog = validate_model(Dog, id)
     db.session.delete(dog)
     db.session.commit()
 
