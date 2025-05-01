@@ -7,12 +7,8 @@ dogs_bp = Blueprint("dogs_bp", __name__, url_prefix = "/dogs")
 @dogs_bp.post("")
 def create_dog():
     request_body = request.get_json()
-    name = request_body["name"]
-    color = request_body["color"]
-    temperament = request_body["temperament"]
-    is_vaccinated = request_body["is_vaccinated"]
-
-    new_dog = Dog(name=name, color=color, temperament=temperament, is_vaccinated=is_vaccinated)
+    new_dog = Dog.from_dict(request_body)
+    
     db.session.add(new_dog)
     db.session.commit()
 

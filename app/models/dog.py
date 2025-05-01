@@ -19,3 +19,11 @@ class Dog(db.Model):
             "is_vaccinated": self.is_vaccinated
         }
 
+    @classmethod
+    def from_dict(cls, dog_data):
+        return cls(
+            name = dog_data["name"],
+            color = dog_data["color"],
+            temperament = dog_data["temperament"],
+            is_vaccinated = dog_data["is_vaccinated"]
+        )
