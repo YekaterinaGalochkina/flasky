@@ -3,9 +3,9 @@ from app.models.dog import Dog
 from ..db import db
 from .route_utilities import validate_model
 
-dogs_bp = Blueprint("dogs_bp", __name__, url_prefix = "/dogs")
+bp = Blueprint("dogs_bp", __name__, url_prefix = "/dogs")
 
-@dogs_bp.post("")
+@bp.post("")
 def create_dog():
     request_body = request.get_json()
     new_dog = Dog.from_dict(request_body)
@@ -15,7 +15,7 @@ def create_dog():
 
     return new_dog.to_dict(), 201
 
-@dogs_bp.get("")
+@bp.get("")
 def get_all_dogs():
     query = db.select(Dog)
 
@@ -48,13 +48,13 @@ def get_all_dogs():
     return dogs_response
 
 
-@dogs_bp.get("/<id>")
+@bp.get("/<id>")
 def get_one_dog(id):
     dog = validate_model(Dog,id)
     return dog.to_dict()
 
 
-@dogs_bp.put("/<id>")
+@bp.put("/<id>")
 def update_dog(id):
     dog = validate_model(Dog, id)
     request_body = request.get_json()
@@ -69,7 +69,7 @@ def update_dog(id):
     return Response(status=204, mimetype="application/json")
 
 
-@dogs_bp.delete("/<id>")
+@bp.delete("/<id>")
 def delete_dog(id):
     dog = validate_model(Dog, id)
     db.session.delete(dog)
@@ -77,7 +77,7 @@ def delete_dog(id):
 
     return Response(status=204, mimetype="application/json")
 
-@dogs_bp.delete("")
+@bp.delete("")
 def delete_all_dogs():
     dogs = db.session.scalars(db.select(Dog)).all()
     

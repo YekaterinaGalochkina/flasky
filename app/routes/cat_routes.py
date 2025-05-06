@@ -1,49 +1,27 @@
 from flask import Blueprint, request, Response
-from .route_utilities import validate_model
-from app.models.cat import Cat
+from .route_utilities import validate_model, create_model, get_models_with_filters
 from ..db import db
+from app.models.cat import Cat
 
-cats_bp = Blueprint("cats_bp", __name__, url_prefix = "/cats")
+bp = Blueprint("cats_bp", __name__, url_prefix = "/cats")
 
-@cats_bp.post("")
+@bp.post("")
 def create_cat():
     request_body = request.get_json()
-    new_cat = Cat.from_dict(request_body)
 
-    db.session.add(new_cat)
-    db.session.commit()
+    return create_model(Cat, request_body)
 
-    return new_cat.to_dict(), 201
-
-@cats_bp.get("")
+@bp.get("")
 def get_all_cats():
-    query = db.select(Cat)
+    return get_models_with_filters(Cat, request.args)
 
-    name_param = request.args.get("name")
-    if name_param:
-        query = db.select(Cat).where(Cat.name == name_param)
-
-    color_param = request.args.get("color")    
-    if color_param:
-        query = query.where(Cat.color.ilike(f"%{color_param}%"))
-    
-    query = query.order_by(Cat.name)
-
-    cats = db.session.scalars(query)
-
-    cats_response = []
-    for cat in cats: 
-        cats_response.append(cat.to_dict())
-
-    return cats_response
-
-@cats_bp.get("/<id>")
+@bp.get("/<id>")
 def get_one_cat(id):
     cat = validate_model(Cat, id)
 
     return cat.to_dict()
 
-@cats_bp.put("/<id>")
+@bp.put("/<id>")
 def update_cat(id):
     cat = validate_model(Cat, id)
     request_body = request.get_json()
@@ -53,32 +31,14 @@ def update_cat(id):
     cat.personality = request_body["personality"]
 
     db.session.commit()
-
     return Response(status=204, mimetype="application/json")
 
-
-@cats_bp.delete("/<id>")
+@bp.delete("/<id>")
 def delete_cat(id):
     cat = validate_model(Cat, id)
     db.session.delete(cat)
     db.session.commit()
-
     return Response(status=204, mimetype="application/json")
-
-@cats_bp.delete("")
-def delete_all_cats():
-    cats = db.session.scalars(db.select(Cat)).all()
-    
-    for cat in cats:
-        db.session.delete(cat)
-    
-    db.session.commit()
-    
-    return {"message": f"Deleted {len(cats)} cats."}, 200
-
-
-
-
 
 
 
